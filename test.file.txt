@@ -1,0 +1,26 @@
+Modification text:
+	@underlineUnderline Text@default
+	@boldBold Text@default
+	@inlineInline Text@default
+	@blinkingBlinking Text@default
+	@reverseReverse Text@default
+
+Color Text:
+	@blackBlack Text@default
+	@redRed Text@default
+	@greenGreen Text@default
+	@yellowYellow Text@default
+	@blueBlue Text@default
+	@purplePurple Text@default
+	@cyanCyan Text@default
+	@greyGray Text@default
+
+Background text:
+	@background.blackBackground Color Black@default
+	@b.redBackground Color Red@default
+	@b.greenBackground Color Green@default
+	@background.yellowBackground Color Yellow@default
+	@background.blueBackground Color Blue@default
+	@b.purpleBackground Color Purple@default
+	@background.cyanBackground Color Cyan@default
+	@b.greyBackground Color Grey@default

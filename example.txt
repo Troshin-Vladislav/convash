@@ -1,0 +1,4 @@
+[@blue01.04.2019@default][@aqua22:54:55@default] @yellowTheme@default @greenMessage@default
+[@rederror@default]: it is error example string
+[@greenaccess@default]: you is give access
+[@bluelog@default]: daemon(@yellowavashi@default) is shutdown with code (@red-1@default) pid(@cyan3301@default)
