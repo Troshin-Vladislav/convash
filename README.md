@@ -48,4 +48,4 @@ USE:
 
 $ ./convash <file> 
 
-![alt text](https://github.com/Troshin-Vladislav/convash/blob/master/images/convash_01.png)
+![alt text](https://github.com/Troshin-Vladislav/convash/blob/master/image/convash_01.png)
