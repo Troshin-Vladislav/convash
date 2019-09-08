@@ -1,7 +1,7 @@
 CONVASH
 =======
 
-Version 0.1
+Version 0.2.7
 Converter special tags in codes color linux console
 @blue > \e[34m
 @inline > \e[3m
@@ -37,6 +37,33 @@ TAGS:
 + @background.cyan -> \e[46m
 + @background.grey -> \e[47m
 
+
+New Version 0.2.7:
+------------------
+
+**add options**
+**add ability to modify the file in place**
+**add shielding mode**
+
+OPTIONS:
+---------
+
+**modify:**
+modification the file in place
+
+**shielding:**
+shielding code color linux console
+
+**033:**
+write code \033 instead \e
+
+**help:**
+print help page
+
+**version:**
+print version and exit
+
+
 Test:
 -----
 
@@ -46,6 +73,6 @@ Test:
 USE:
 ----
 
-$ ./convash <file> 
+$ ./convash [options?] <file> 
 
 ![alt text](https://github.com/Troshin-Vladislav/convash/blob/master/image/convash_01.png)

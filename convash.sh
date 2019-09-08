@@ -8,50 +8,155 @@
 #########################################################
 
 
-_VERSION="0.1"
-
-DEFAULT="\e[0m"			# @default
-BOLD="\e[1m"			# @bold
-INLINE="\e[3m"			# @inline
-UNDERLINE="\e[4m"		# @underline
-BLINKING="\e[5m"		# @blinking
-REVERSE="\e[7m"			# @reverse
-
-BLACK="\e[30m"			# @black
-RED="\e[31m"			# @red
-GREEN="\e[32m"			# @green
-YELLOW="\e[33m"			# @yellow
-BLUE="\e[34m"			# @blue
-PURPLE="\e[35m"			# @purple
-CYAN="\e[36m"			# @cyan | @aqua
-GREY="\e[37m"			# @grey
-
-BACKGROUND_BLACK="\e[40m"			# @background.black		> @b.black
-BACKGROUND_RED="\e[41m"				# @background.red		> @b.red
-BACKGROUND_GREEN="\e[42m"			# @background.green		> @b.green
-BACKGROUND_YELLOW="\e[43m"			# @background.yellow	> @b.yellow
-BACKGROUND_BLUE="\e[44m"			# @background.blue		> @b.blue
-BACKGROUND_PURPLE="\e[45m"			# @background.purple	> @b.purple
-BACKGROUND_CYAN="\e[46m"			# @background.cyan		> @b.cyan
-BACKGROUND_GREY="\e[47m"			# @background.grey		> @b.grey
+CCOMPLETE="\e[32m"
+CERROR="\e[31m"
+CNOTE="\e[34m"
+CDEFAULT="\e[0m"
 
 
+_VERSION="0.2.7"
+PREFIX='\e'
+
+MODE_ORIGINAL="ON"
+MODE_SHIELD="OFF"
+MODE_MODIFY="OFF"
+MODE_033="OFF"
+
+OPTSED=''
+
+# @function: help
+_help(){
+	_usage
+	echo "options:"
+	echo -e "\tmodify: \tmode modification file in place"
+	echo -e "\tshielding: \tshielding code color"
+	echo -e "\t033: \twrite prefix \033 instead \e"
+	echo -e "\thelp: \t\toutput help page"
+	echo -e "\tversion: \tprint version program and exit\n"
+}
+
+# @function: version
+_version(){
+	echo "convash.sh v"$_VERSION
+	echo -e " ["$CCOMPLETE"+"$CDEFAULT"] add options"
+}
+
+_error(){
+	echo -e "["$CERROR"error"$CDEFAULT"]: $1" 2> /dev/stderr
+}
+
+_usage(){
+	echo -e "Usage: convash [options] <file>" > /dev/stderr
+}
+
+_note(){
+	echo -e "["$CNOTE"note"$CDEFAULT"]: $1"
+}
+
+# Check arguments
 if [ $# -lt 1 ]
 then
-	echo -e "["$RED"error"$DEFAULT"]: convash: is few arguiments" > /dev/stderr
-	echo -e "Usage: convash <file>" > /dev/stderr
+	_error "convash: is few arguiments"
+	_usage
+	_help
 	exit 1
 fi
 
-target="$1"
+
+# Parse arguments
+while [ -n "$1" ]
+do
+	case "$1" in
+		modify)
+			OPTSED='-i'
+			PREFIX='x1b'
+			MODE_MODIFY="ON"
+			MODE_ORIGINAL="OFF"
+			;;
+		033)
+			PREFIX='\033'
+			MODE_033="ON"
+			MODE_ORIGINAL="OFF"
+			;;
+		shielding)
+			MODE_SHIELD="ON"
+			;;
+		help)
+			_help
+			exit 0
+			;;
+		version)
+			_version
+			exit 0
+			;;
+		*)
+			if [ -f $1 ]; then
+				target="$1"
+			fi
+			;;
+	esac
+	shift
+done
+
+# Parse setting options and notification
+if [ $MODE_MODIFY == "ON" ] && [ $MODE_033 == "ON" ]; then
+	PREFIX='\033'
+	# _error "choice one mode, modify or 033"; exit 1
+fi
+
+if [ $MODE_SHIELD == "ON" ]; then
+	case "ON" in
+		$MODE_MODIFY)
+			PREFIX='\'$PREFIX
+			;;
+		$MODE_ORIGINAL)
+			PREFIX='\\\'$PREFIX
+			;;
+	esac
+fi
+
+# echo "[debug]: prefix($PREFIX), MODIFY($MODE_MODIFY)"
+
+DEFAULT="$PREFIX[0m"		# @default
+BOLD="$PREFIX[1m"			# @bold
+INLINE="$PREFIX[3m"			# @inline
+UNDERLINE="$PREFIX[4m"		# @underline
+BLINKING="$PREFIX[5m"		# @blinking
+REVERSE="$PREFIX[7m"		# @reverse
+
+BLACK="$PREFIX[30m"			# @black
+RED="$PREFIX[31m"			# @red
+GREEN="$PREFIX[32m"			# @green
+YELLOW="$PREFIX[33m"		# @yellow
+BLUE="$PREFIX[34m"			# @blue
+PURPLE="$PREFIX[35m"		# @purple
+CYAN="$PREFIX[36m"			# @cyan | @aqua
+GREY="$PREFIX[37m"			# @grey
+
+BACKGROUND_BLACK="$PREFIX[40m"			# @background.black		> @b.black
+BACKGROUND_RED="$PREFIX[41m"			# @background.red		> @b.red
+BACKGROUND_GREEN="$PREFIX[42m"			# @background.green		> @b.green
+BACKGROUND_YELLOW="$PREFIX[43m"			# @background.yellow	> @b.yellow
+BACKGROUND_BLUE="$PREFIX[44m"			# @background.blue		> @b.blue
+BACKGROUND_PURPLE="$PREFIX[45m"			# @background.purple	> @b.purple
+BACKGROUND_CYAN="$PREFIX[46m"			# @background.cyan		> @b.cyan
+BACKGROUND_GREY="$PREFIX[47m"			# @background.grey		> @b.grey
+
+
+# if target file is empty
+if [ -z $target ]; then
+	_error "no file specified"
+	exit 1
+fi
+
+# if target file was not found
 if [ ! -f $target ]
 then
-	echo -e "["$RED"error"$DEFAULT"]: file is not found"
+	_error "file($target) is not found"
 	exit 1
 fi
 
-# s:@blue:\\\e[31m:g
-result=`sed -e '
+result=`sed $OPTSED -e '
 s:@default:\\'$DEFAULT':g
 s:@bold:\\'$BOLD':g
 s:@inline:\\'$INLINE':g
@@ -76,6 +181,10 @@ s:@background.cyan\|@b.cyan:\\'$BACKGROUND_CYAN':g
 s:@background.grey\|@b.grey:\\'$BACKGROUND_GREY':g
 ' $target`
 
-echo -e "$result"
+# if result output sed is not empty
+if [ ! -z "$result" ]; then
+	echo -e "$result"
+fi
 
 exit 0
+
