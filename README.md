@@ -73,6 +73,6 @@ Test:
 USE:
 ----
 
-$ ./convash [options?] <file> 
+$ ./convash [options?] {file}
 
 ![alt text](https://github.com/Troshin-Vladislav/convash/blob/master/image/convash_01.png)
